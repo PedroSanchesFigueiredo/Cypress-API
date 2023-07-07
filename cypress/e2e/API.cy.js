@@ -1,74 +1,54 @@
 /// <reference types="cypress" />
 
-describe('API Test SP', () => {
-  it('Should validate the response body', () => {
-    cy.request('GET', '')
-      .then((response) => {
-        expect(response.status).to.eq(200)
-        expect(response.body).to.have.property('Objeto').to.be.an('array')
-        
-        const [inscricao] = response.body.Objeto
-        expect(inscricao).to.have.property('Inscricao')
-        expect(inscricao).to.have.property('SituacaoInscricao')
-        expect(inscricao).to.have.property('DataInscricao')
-        expect(inscricao).to.have.property('DataAlteracao')
-        expect(inscricao).to.have.property('PagamentoSituacao')
-        expect(inscricao).to.have.property('FichaInscricao')
-      })
-  })
-})
+describe('Criando uma atividade', () => {
+  it.only('Enviar corpo de resposta na requisição', () => {
+    const responseBody = {
+      id: 9999,
+      title: 'As aventuras de PP',
+      dueDate: '2023-07-07T17:51:15.137Z',
+      completed: true
+    };
 
-describe('API Test MG', () => {
-  it('Should validate the response body', () => {
-    cy.request('GET', '')
+    cy.request('POST', 'https://fakerestapi.azurewebsites.net/api/v1/Activities', { body: responseBody })
       .then((response) => {
-        expect(response.status).to.eq(200)
-        expect(response.body).to.have.property('Objeto').to.be.an('array')
-        
-        const [inscricao] = response.body.Objeto
-        expect(inscricao).to.have.property('Inscricao')
-        expect(inscricao).to.have.property('SituacaoInscricao')
-        expect(inscricao).to.have.property('DataInscricao')
-        expect(inscricao).to.have.property('DataAlteracao')
-        expect(inscricao).to.have.property('PagamentoSituacao')
-        expect(inscricao).to.have.property('FichaInscricao')
-      })
-  })
-})
+        // Realizar asserções nos dados da resposta
+        expect(response.status).to.equal(200);
+        // Faça asserções adicionais conforme necessário
+        expect(responseBody).to.deep.equal({
+          id: 9999,
+          title: 'As aventuras de PP',
+          dueDate: '2023-07-07T17:51:15.137Z',
+          completed: true
 
+        });
+      });
 
-describe('API Test Sul', () => {
-  it('Should validate the response body', () => {
-    cy.request('GET', '')
-      .then((response) => {
-        expect(response.status).to.eq(200)
-        expect(response.body).to.have.property('Objeto').to.be.an('array')
-        
-        const [inscricao] = response.body.Objeto
-        expect(inscricao).to.have.property('Inscricao')
-        expect(inscricao).to.have.property('SituacaoInscricao')
-        expect(inscricao).to.have.property('DataInscricao')
-        expect(inscricao).to.have.property('DataAlteracao')
-        expect(inscricao).to.have.property('PagamentoSituacao')
-        expect(inscricao).to.have.property('FichaInscricao')
-      })
-  })
-})
+    it('Validar livro criado', () => {
+      cy.request('GET', 'https://fakerestapi.azurewebsites.net/api/v1/Activities')
+        .then((response) => {
+          // Realizar asserções no corpo da resposta
+          expect(response.status).to.equal(200);
+          expect(response.body).to.be.an('array').that.is.not.empty;
 
-describe('API Test Nordeste', () => {
-  it('Should validate the response body', () => {
-    cy.request('GET', '')
-      .then((response) => {
-        expect(response.status).to.eq(200)
-        expect(response.body).to.have.property('Objeto').to.be.an('array')
-        
-        const [inscricao] = response.body.Objeto
-        expect(inscricao).to.have.property('Inscricao')
-        expect(inscricao).to.have.property('SituacaoInscricao')
-        expect(inscricao).to.have.property('DataInscricao')
-        expect(inscricao).to.have.property('DataAlteracao')
-        expect(inscricao).to.have.property('PagamentoSituacao')
-        expect(inscricao).to.have.property('FichaInscricao')
-      })
+          const activity = response.body[0];
+          expect(activity).to.have.property('id');
+          expect(activity).to.have.property('title')
+          expect(activity).to.have.property('dueDate')
+        });
+    });
+
+    it('Validar se o campo "id" existe na resposta da API', () => {
+      cy.request('GET', 'https://fakerestapi.azurewebsites.net/api/v1/Activities')
+        .then((response) => {
+          // Realizar asserções no corpo da resposta
+          expect(response.status).to.equal(200);
+          expect(response.body).to.be.an('array').that.is.not.empty;
+
+          const activity = response.body[0];
+          expect(activity).to.have.property('id');
+          expect(activity).to.have.property('title')
+          expect(activity).to.have.property('dueDate')
+        });
+    })
   })
 })
